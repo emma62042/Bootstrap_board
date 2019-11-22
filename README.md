@@ -24,7 +24,3 @@ center88留言板 with MVC + member + 前端可以改用jquery validate + View�
 未做工作:  
 * bootstrap 頁碼
 * 留言表格在螢幕縮小時會跑位    
-    
-    
-    
-
