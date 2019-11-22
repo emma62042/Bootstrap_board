@@ -5,7 +5,7 @@ function begin() {?>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>center88留言板</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel=stylesheet href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel=stylesheet type="text/css" href="css/board.css">
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -15,7 +15,8 @@ function begin() {?>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/localization/messages_zh_TW.js"></script>
 		<script>
-		$().ready(function(){
+		
+		$(document).ready(function(){
             $("#postForm").validate();
             $("#modifyMyPwdForm").validate();
             $("#signupForm").validate({
@@ -23,8 +24,8 @@ function begin() {?>
             	rules:{
                 	set_id:{  
                         required:true,  
-                        remote:{                         //自带远程验证存在的方法  
-                            url:"tel.php",  				//太神奇啦??? 
+                        remote:{
+                            url:"tel.php",
                             type:"post",
                             data:{
                             	set_id:function(){
@@ -92,14 +93,14 @@ function sidebar() {?>
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 			</form>
 			
-			<a class="navbar-brand">會員</a>
+			<a class="navbar-brand">會員專區</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     			<span class="navbar-toggler-icon"></span>
     		</button>
     		<div class="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
             	<ul class="navbar-nav text-right">
         			<li class="nav-item"><a class="nav-link" href="index.php?action=post">新增留言</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?action=modifyMyData">修改資料</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php?action=modifyMyData">修改會員資料</a></li>
                     <li class="nav-item"><a class="nav-link" href="index.php?action=modifyMyPwd">修改密碼</a></li>
                     <li class="nav-item"><a class="nav-link" href="index.php?action=listMyMsg">我的留言</a></li>
                     <li class="nav-item"><a class="nav-link" href="index.php?action=searchlist">回首頁</a></li>

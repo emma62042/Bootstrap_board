@@ -5,6 +5,7 @@
  * 它的主要部分是對應於留言本各種資料操作的函式
  * 如:留言資料的顯示、插入、刪除等
  */
+//
 $key = "2BC725612ED4DE3B638732F73677DF275385EF3A08E1E78D34A28FED3FCC55C1D41B3E3711B31A9D2FBD6507F689EC4333C018463D871B0D9DBDE24F55";
 class Model {
     
@@ -23,9 +24,9 @@ class Model {
     
     function listNote($page, $per) {    //獲取全部留言
         $start = ($page - 1) * $per; //每一頁開始的資料序號
-        $notes = $this->dao->fetchRows("SELECT A.*, B.nickname
-                                        FROM center88_board as A
-                                        NATURAL JOIN center88_member as B
+        $notes = $this->dao->fetchRows("SELECT b.*, m.nickname
+                                        FROM Board as b
+                                        NATURAL JOIN Member as m
                                         ORDER BY time DESC 
                                         LIMIT ".$start.", ".$per);
         
@@ -35,9 +36,9 @@ class Model {
     
     function searchNote($page, $per, $search) {    //獲取全部留言
         $start = ($page - 1) * $per; //每一頁開始的資料序號
-        $notes = $this->dao->fetchRows("SELECT A.*, B.nickname
-                                        FROM center88_board as A
-                                        NATURAL JOIN center88_member as B
+        $notes = $this->dao->fetchRows("SELECT b.*, m.nickname
+                                        FROM Board as b
+                                        NATURAL JOIN Member as m
                                         WHERE msg_title LIKE '%" . $search . "%'
                                         ORDER BY time DESC
                                         LIMIT ".$start.", ".$per);
@@ -52,18 +53,18 @@ class Model {
         switch($dowhat){
             case "list":
                 $page_array["data_rows"] = $this->dao->rowsNum("SELECT *
-                                                                FROM center88_board
+                                                                FROM Board
                                                                 ORDER BY time DESC");
                 break;
             case "search":
                 $page_array["data_rows"] = $this->dao->rowsNum("SELECT *
-                                                                FROM center88_board
+                                                                FROM Board
                                                                 WHERE msg_title LIKE '%" . $search . "%'
                                                                 ORDER BY time DESC");
                 break;
             case "listMyMsg":
                 $page_array["data_rows"] = $this->dao->rowsNum("SELECT *
-                                                                FROM center88_board
+                                                                FROM Board
                                                                 WHERE mb_id ='" . $_SESSION["login_id"] . "'
                                                                 ORDER BY time DESC");
                 break;
@@ -80,7 +81,7 @@ class Model {
         $msg_array["errmsg"] = "";
         
         if($msg_title != NULL && $msg != NULL ){//不允許add送空字串
-            $sql = "INSERT INTO center88_board (msg_title, msg, mb_id)
+            $sql = "INSERT INTO Board (msg_title, msg, mb_id)
                     VALUES ('" . $msg_title . "','" . $msg . "','" . $_SESSION["login_id"] . "')";
             if($this->dao->query($sql)){
                 $msg_array["success"] = 1;
@@ -101,7 +102,7 @@ class Model {
         if(isset($_GET["id"])){ //未修改前，輸出原本內容
             $msg_array["id"] = $_GET["id"];
             $sql = "SELECT *
-                    FROM center88_board
+                    FROM Board
                     WHERE msg_id = " . $msg_array["id"]. "
                     ORDER BY time DESC";
             $notes = $this->dao->fetchRows($sql);
@@ -114,7 +115,7 @@ class Model {
             $time = date("Y-m-d H:i:s",time()+8*60*60); //GMT+8
             $id = $_POST["msg_id"];
             $msg = $_POST["msg"];
-            $sql = "UPDATE center88_board
+            $sql = "UPDATE Board
                     SET msg='" . $msg . "', time= '" . $time . "'
                     WHERE msg_id= '" . $id . "'";
             if($this->dao->query($sql)){
@@ -128,9 +129,9 @@ class Model {
     
     function deleteNote() {
         if(isset($_GET["id"])){ //未刪除前，輸出原本內容
-            $sql = "SELECT A.*, B.nickname
-                    FROM center88_board as A
-                    NATURAL JOIN center88_member as B
+            $sql = "SELECT b.*, m.nickname
+                    FROM Board as b
+                    NATURAL JOIN Member as m
                     WHERE msg_id = " . $_GET["id"] . "
                     ORDER BY time DESC";
             $notes = $this->dao->fetchRows($sql);
@@ -139,7 +140,7 @@ class Model {
             }
         }
         if(isset($_POST["msg_id"])){ //未修改前，輸出原本內容
-            $sql = "DELETE FROM center88_board 
+            $sql = "DELETE FROM Board 
                     WHERE msg_id = '" . $_POST["msg_id"] . "'" ;
             if ($this->dao->query($sql)){
                 $value["success"] = 1;
@@ -161,7 +162,7 @@ class Model {
         if(isset($_POST["mb_id"])){ //未修改前，輸出原本內容
             if($_POST["mb_id"] != NULL && $_POST["mb_pwd"] != NULL){
                 $sql = "SELECT *
-                        FROM center88_member
+                        FROM Member
                         WHERE mb_id='" . $_POST["mb_id"] . "'";
                 if($this->dao->rowsNum($sql) == 0){
                     $member_array["mb_id"] = $_POST["mb_id"];
@@ -169,7 +170,7 @@ class Model {
                     return $member_array;
                 }
                 $sql = "SELECT *
-                        FROM center88_member
+                        FROM Member
                         WHERE mb_id='" . $_POST["mb_id"] . "' and AES_DECRYPT(pwd, '" . $GLOBALS["key"] . "') ='" . $_POST["mb_pwd"] . "'";
                 if($this->dao->rowsNum($sql) == 0){
                     $member_array["mb_id"] = $_POST["mb_id"];
@@ -202,7 +203,7 @@ class Model {
                     return $signup_array;
                 }
                 $sql = "SELECT * 
-                        FROM center88_member 
+                        FROM Member 
                         WHERE mb_id='" . $_POST["set_id"] . "'";
                 if($this->dao->rowsNum($sql) > 0){
                     $signup_array["set_id"] = $_POST["set_id"];
@@ -216,7 +217,7 @@ class Model {
                     $set_nickname = $_POST["set_nickname"];
                 }
                 
-                $sql = "INSERT INTO center88_member
+                $sql = "INSERT INTO Member
                         VALUES ('" . $_POST["set_id"] . "', AES_ENCRYPT('" . $_POST["set_pwd"] . "','" . $GLOBALS['key'] . "'),'" . $set_nickname . "','" . $_POST["set_email"] . "')";
                 if($this->dao->query($sql)){
                     $signup_array["success"] = 1;
@@ -236,7 +237,7 @@ class Model {
     function modifyMyDataNote() {
         $md_array["email"] = "";
         if(isset($_POST["new_email"])){
-            $sql = "UPDATE center88_member
+            $sql = "UPDATE Member
                     SET email='" . $_POST["new_email"] . "'
                     WHERE mb_id= '" . $_SESSION["login_id"] . "'";
             if($this->dao->query($sql)){
@@ -246,7 +247,7 @@ class Model {
             }
         }else{
             $sql = "SELECT email
-                    FROM center88_member
+                    FROM Member
                     WHERE mb_id = '" . $_SESSION["login_id"] . "'";
             $notes = $this->dao->fetchRows($sql);
             foreach($notes as $value){
@@ -274,7 +275,7 @@ class Model {
         {
             if($_POST["old_mb_pwd"] != NULL && $_POST["new_mb_pwd"] != NULL && $_POST["new_check_pwd"] != NULL){//不允許signup送空字串
                 $sql = "SELECT AES_DECRYPT(pwd, '" . $GLOBALS["key"] . "')pwd
-                        FROM center88_member
+                        FROM Member
                         WHERE mb_id='" . $_SESSION["login_id"] . "'";
                 $notes = $this->dao->fetchRows($sql);
                 foreach ($notes as $value) {
@@ -288,7 +289,7 @@ class Model {
                     $mdpwd_array["errckpwd"] = "密碼不相符";
                     return $mdpwd_array;
                 }
-                $sql = "UPDATE center88_member
+                $sql = "UPDATE Member
                         SET pwd=AES_ENCRYPT('" . $_POST["new_mb_pwd"] . "','" . $GLOBALS['key'] . "')
                         WHERE mb_id= '" . $_SESSION["login_id"] . "'";
                 if($this->dao->query($sql)){
@@ -307,9 +308,9 @@ class Model {
      */
     function listMyMsgNote($page, $per) {
         $start = ($page - 1) * $per; //每一頁開始的資料序號
-        $notes = $this->dao->fetchRows("SELECT A.*, B.nickname
-                                        FROM center88_board as A
-                                        NATURAL JOIN center88_member as B
+        $notes = $this->dao->fetchRows("SELECT b.*, m.nickname
+                                        FROM Board as b
+                                        NATURAL JOIN Member as m
                                         WHERE mb_id ='" . $_SESSION["login_id"] . "'
                                         ORDER BY time DESC
                                         LIMIT ".$start.", ".$per);

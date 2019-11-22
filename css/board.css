@@ -74,7 +74,7 @@
 .login_content {
     background-color:blanchedalmond;
     border:5px #634624 solid;
-    height: inherit;
+    min-height: 600px;
     width:inherit;
     float: right;
     padding: 30px;
@@ -85,7 +85,7 @@
 .content {
     background-color:blanchedalmond;
     border:5px #634624 solid;
-    height:inherit;
+    min-height: 600px;
     width:inherit;
     float: right;
     padding: 30px;
@@ -109,6 +109,7 @@
 }
 .cont_tb td{
     text-align: left;
+    word-break: break-all;
     padding: 10px;
     border: 1px #FACFAD groove;
 }

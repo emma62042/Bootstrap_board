@@ -15,13 +15,13 @@ class SearchListView {  //顯示所有留言的子類上方加搜尋
 				</tr>
 				<tr>
 					<td>留言標題：</td>
-                    <td width="450">
+                    <td style="width:450px;">
                         <?php echo $value["msg_title"] ?>
                     </td>
                 </tr>
                 <tr>
 					<td>留言內容：</td>
-					<td width="450">
+					<td style="width:450px;">
     					<?php
     					   $msg = str_replace("\n","<br/>",$value["msg"]);
                            echo $msg;

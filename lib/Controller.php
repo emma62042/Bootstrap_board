@@ -45,10 +45,12 @@ class ListSearchController extends Controller {   //extends表示繼承
             $this->view->viewPage($page_array);
         }else{
             $page_array = $this->model->pageArray($page, "search", $search);
-            $notes = $this->model->searchNote($page, $page_array["per"], $search);
-            $this->view = new SearchListView();
-            $this->view->viewMsgResult($notes);
-            $this->view->viewPage($page_array, "&input=".$search);
+            if($page_array["data_rows"]!=0){
+                $notes = $this->model->searchNote($page, $page_array["per"], $search);
+                $this->view = new SearchListView();
+                $this->view->viewMsgResult($notes);
+                $this->view->viewPage($page_array, "&input=".$search);
+            }
         }
     }
 }
